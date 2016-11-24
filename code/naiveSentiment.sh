@@ -2,8 +2,13 @@
 
 ## Input word
 word=$1
-nwords=2
-word_vec=$(cat ../data/spanish_billion_words_vecs/SBW-vectors-300-min5.txt | grep -E -m 1 "^$word ")
+nwords=$2
+word_vec=''
+
+for i in $(echo $word);
+do
+    word_vec=$word_vec'\n'$(cat ../data/spanish_billion_words_vecs/SBW-vectors-300-min5.txt | grep -E -m 1 "^$i ")
+done
 
 ## Sentiment vectors: replace with clusters...
 good_vec=$(cat ../data/spanish_billion_words_vecs/SBW-vectors-300-min5.txt | grep -E -m $nwords "^buen.* ")
@@ -11,6 +16,8 @@ bad_vec=$(cat ../data/spanish_billion_words_vecs/SBW-vectors-300-min5.txt | grep
 
 echo "$good_vec" > good.txt
 echo "$bad_vec"  > bad.txt
-echo "$word_vec" > word.txt
+echo -e "$word_vec" > word.txt
 
 ./average.R
+
+rm *.txt
